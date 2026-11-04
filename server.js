@@ -113,8 +113,44 @@ function extractGeminiText(data) {
   return text;
 }
 
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function getRetryDelayMs(response, attempt, baseDelayMs, maxDelayMs) {
+  const retryAfter = response.headers?.get?.('retry-after');
+  if (retryAfter) {
+    const seconds = Number(retryAfter);
+    const retryDate = Date.parse(retryAfter);
+    const serverDelay = Number.isFinite(seconds)
+      ? seconds * 1000
+      : (Number.isFinite(retryDate) ? Math.max(0, retryDate - Date.now()) : NaN);
+    if (Number.isFinite(serverDelay)) {
+      return Math.min(maxDelayMs, Math.max(0, serverDelay));
+    }
+  }
+  return Math.min(maxDelayMs, baseDelayMs * (2 ** attempt));
+}
+
+async function fetchWithRetry(url, options, {
+  maxRetries = 2,
+  baseDelayMs = 1500,
+  maxDelayMs = 6000,
+  fetchImpl = fetch,
+  sleepImpl = sleep,
+} = {}) {
+  for (let attempt = 0; ; attempt += 1) {
+    const response = await fetchImpl(url, options);
+    if (response.status !== 503 || attempt >= maxRetries) {
+      return response;
+    }
+    const delayMs = getRetryDelayMs(response, attempt, baseDelayMs, maxDelayMs);
+    await sleepImpl(delayMs);
+  }
+}
+
 async function callGemini({ message, history, config }) {
-  const response = await fetch(config.url, {
+  const response = await fetchWithRetry(config.url, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -134,7 +170,8 @@ async function callGemini({ message, history, config }) {
     const error = new Error(
       `Gemini API phản hồi HTTP ${response.status}${providerMessage ? `: ${String(providerMessage).slice(0, 260)}` : '. Hãy kiểm tra API key, model và quyền truy cập.'}`,
     );
-    error.status = response.status === 429 ? 429 : 502;
+    error.providerStatus = response.status;
+    error.status = response.status === 429 ? 429 : response.status === 503 ? 503 : 502;
     throw error;
   }
   const answer = extractGeminiText(data);
@@ -262,10 +299,17 @@ const server = http.createServer(async (req, res) => {
       return sendJson(res, 200, { answer });
     } catch (error) {
       const status = Number.isInteger(error.status) ? error.status : 502;
-      const message = error.name === 'TimeoutError' || error.name === 'AbortError'
-        ? 'Gemini phản hồi quá lâu. Hãy thử lại với câu hỏi ngắn hơn.'
-        : (error.message || 'Không thể kết nối AI lúc này.');
-      return sendJson(res, status, { error: message });
+      let userMessage;
+      if (error.name === 'TimeoutError' || error.name === 'AbortError') {
+        userMessage = 'Gemini phản hồi quá lâu. Hãy thử lại với câu hỏi ngắn hơn.';
+      } else if (error.providerStatus === 503) {
+        userMessage = 'Gemini đang tạm thời quá tải (HTTP 503). Website đã tự thử lại 2 lần nhưng dịch vụ vẫn bận. Đây thường không phải lỗi API key; hãy chờ một lúc rồi gửi lại nhé.';
+      } else if (error.providerStatus === 429) {
+        userMessage = 'Gemini đang giới hạn số lượt gọi hoặc hạn mức sử dụng (HTTP 429). Hãy kiểm tra Usage & Billing trong Google AI Studio rồi thử lại sau.';
+      } else {
+        userMessage = error.message || 'Không thể kết nối AI lúc này.';
+      }
+      return sendJson(res, status, { error: userMessage });
     }
   }
 
@@ -299,6 +343,8 @@ module.exports = {
   getProviderConfig,
   isRealConfig,
   extractGeminiText,
+  fetchWithRetry,
+  getRetryDelayMs,
   requestAI,
   isRateLimited,
 };
