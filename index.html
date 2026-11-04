@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#080d16">
+  <meta name="description" content="HobbyVerse — không gian khám phá mô hình Gundam, figure anime và nhân vật game cùng trợ lý AI.">
+  <title>HobbyVerse — Collectibles & Model Kits</title>
+  <link rel="icon" type="image/svg+xml" href="./logo.svg">
+  <link rel="preconnect" href="https://images.bigbadtoystore.com">
+  <link rel="preconnect" href="https://resize.cdn.otakumode.com">
+  <link rel="stylesheet" href="./styles.css">
+  <script src="./app.js" defer></script>
+</head>
+<body>
+  <div class="announcement">HOBBYVERSE · YOUR COLLECTION, YOUR UNIVERSE <span>✦</span> AI COLLECTOR ASSISTANT</div>
+  <header class="site-header">
+    <a class="brand" href="#top" aria-label="HobbyVerse trang chủ">
+      <img src="./logo.svg" alt="" width="42" height="42">
+      <span>HOBBY<span class="brand-accent">VERSE</span><small>COLLECTIBLES STUDIO</small></span>
+    </a>
+    <nav class="main-nav" aria-label="Điều hướng chính">
+      <a href="#catalog">Bộ sưu tập</a><a href="#about">Khám phá</a><a href="#ai-assistant">AI tư vấn</a>
+    </nav>
+    <div class="header-actions">
+      <button class="icon-button" id="wishlist-header" type="button" aria-label="Xem sản phẩm yêu thích">♡ <span id="wishlist-count">0</span></button>
+      <a class="header-cta" href="#catalog">Khám phá ngay <span>↗</span></a>
+      <button class="mobile-menu" id="mobile-menu" type="button" aria-label="Mở menu">☰</button>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="hero-grid"></div>
+      <div class="hero-copy">
+        <div class="eyebrow"><span class="pulse-dot"></span> THE COLLECTOR'S PLAYGROUND</div>
+        <h1>Build your<br><em>own universe.</em></h1>
+        <p>Từ những bộ Gunpla đầy kỹ thuật đến figure anime và nhân vật game — tìm món trưng bày tiếp theo trong bộ sưu tập của bạn.</p>
+        <div class="hero-buttons"><a class="button button-primary" href="#catalog">Khám phá bộ sưu tập <span>↗</span></a><button class="button button-ghost" id="hero-ai">Hỏi AI tư vấn <span>✦</span></button></div>
+        <div class="hero-stats"><div><strong>GUNPLA</strong><span>MODEL KITS</span></div><i></i><div><strong>ANIME</strong><span>FIGURES</span></div><i></i><div><strong>GAMING</strong><span>COLLECTIBLES</span></div></div>
+      </div>
+      <div class="hero-art" aria-label="Minh họa bộ sưu tập mô hình">
+        <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div>
+        <div class="hero-chip chip-top">✦ COLLECT / DISPLAY / REPEAT</div>
+        <div class="hero-object"><div class="object-glow"></div><div class="model-box"><span class="box-top">HOBBYVERSE / LIMITED DISPLAY</span><div class="box-mecha">◇</div><strong>MODEL<br>UNIVERSE</strong><small>NO. 001 — YOUR NEXT FAVORITE</small></div></div>
+        <div class="hero-chip chip-bottom"><span class="tiny-spark">✦</span> FIND YOUR NEXT GRAIL</div>
+        <span class="hero-cross cross-a">＋</span><span class="hero-cross cross-b">✧</span>
+      </div>
+    </section>
+
+    <section class="ticker" aria-label="Danh mục"><div>GUNPLA <b>✦</b> ANIME FIGURES <b>✦</b> GAME CHARACTERS <b>✦</b> MODEL KITS <b>✦</b> COLLECTIBLES <b>✦</b> GUNPLA <b>✦</b> ANIME FIGURES <b>✦</b> GAME CHARACTERS <b>✦</b></div></section>
+
+    <section class="catalog-section section-wrap" id="catalog">
+      <div class="section-heading"><div><div class="eyebrow">CURATED FOR COLLECTORS</div><h2>Chọn thế giới <em>của bạn.</em></h2></div><p>Một vài lựa chọn tiêu biểu để bạn bắt đầu khám phá. Giá và tình trạng trên bản demo chỉ mang tính minh họa.</p></div>
+      <div class="catalog-toolbar">
+        <div class="filter-tabs" role="group" aria-label="Lọc danh mục">
+          <button class="filter-tab active" data-filter="all">Tất cả <span>06</span></button>
+          <button class="filter-tab" data-filter="gundam">Gundam</button>
+          <button class="filter-tab" data-filter="anime">Anime</button>
+          <button class="filter-tab" data-filter="game">Game</button>
+        </div>
+        <label class="search-box"><span>⌕</span><input id="search-input" type="search" placeholder="Tìm mô hình, nhân vật..." aria-label="Tìm kiếm sản phẩm"><kbd>⌘ K</kbd></label>
+      </div>
+      <div class="product-grid" id="product-grid" aria-live="polite"></div>
+      <div class="catalog-note"><span>ⓘ</span> Hình ảnh sản phẩm được liên kết từ các trang tham khảo bên ngoài. Giá hiển thị là giá demo, không phải giá bán hoặc tồn kho thực tế.</div>
+    </section>
+
+    <section class="feature-band" id="about">
+      <div class="feature-visual"><div class="feature-ring"></div><div class="feature-card"><span>HOBBYVERSE AI</span><div class="feature-symbol">✦</div><strong>ASK.<br>EXPLORE.<br>COLLECT.</strong><small>YOUR PERSONAL HOBBY GUIDE</small></div></div>
+      <div class="feature-copy" id="ai-assistant"><div class="eyebrow">MORE THAN A CATALOG</div><h2>Không biết bắt đầu<br>từ đâu? <em>Hỏi thử AI.</em></h2><p>Trợ lý AI có thể giúp bạn phân biệt các dòng mô hình, chọn độ khó lắp ráp, cân nhắc không gian trưng bày và tìm phong cách phù hợp với ngân sách.</p><ul><li><span>01</span> Gợi ý dòng Gunpla cho người mới</li><li><span>02</span> So sánh figure và model kit</li><li><span>03</span> Lên ý tưởng góc trưng bày</li></ul><button class="button button-primary" id="feature-ai">Trò chuyện với HobbyVerse AI <span>✦</span></button></div>
+    </section>
+
+    <section class="newsletter section-wrap"><div><div class="eyebrow">THE COLLECTOR'S NOTE</div><h2>Mỗi mô hình đều có <em>một câu chuyện.</em></h2><p>Khám phá bộ sưu tập, lưu món bạn thích và hỏi AI để tìm hiểu thêm.</p></div><a href="#catalog" class="button button-ghost">Quay lại bộ sưu tập ↗</a></section>
+  </main>
+
+  <footer><a class="brand footer-brand" href="#top"><img src="./logo.svg" alt="" width="36" height="36"><span>HOBBY<span class="brand-accent">VERSE</span><small>COLLECTIBLES STUDIO</small></span></a><p>Demo project · Powered by Google Gemini AI</p><span>© 2026 HOBBYVERSE</span></footer>
+
+  <button class="chat-launcher" id="chat-launcher" type="button" aria-label="Mở trợ lý AI"><span>✦</span><b>Hỏi HobbyVerse AI</b></button>
+  <aside class="chat-panel" id="chat-panel" aria-label="Trợ lý HobbyVerse AI" aria-hidden="true">
+    <div class="chat-header"><div class="assistant-avatar">✦</div><div><strong>HobbyVerse AI</strong><small><span class="online-dot"></span> Google Gemini · Tư vấn sưu tầm</small></div><button id="chat-close" class="chat-close" type="button" aria-label="Đóng chat">×</button></div>
+    <div class="chat-messages" id="chat-messages"><div class="chat-welcome"><div class="welcome-star">✦</div><strong>Chào bạn, collector!</strong><p>Mình có thể giúp bạn chọn Gunpla, figure anime hoặc mô hình game. Bạn đang tìm món đầu tiên hay muốn mở rộng bộ sưu tập?</p><div class="quick-prompts"><button type="button" data-prompt="Mình mới chơi Gunpla, nên bắt đầu từ dòng nào?">Mới chơi Gunpla</button><button type="button" data-prompt="Hãy gợi ý figure anime để trưng bày trên bàn học.">Figure anime</button><button type="button" data-prompt="So sánh model kit và figure có sẵn.">Model kit vs figure</button></div></div></div>
+    <form class="chat-form" id="chat-form"><textarea id="chat-input" rows="1" maxlength="3000" placeholder="Nhập câu hỏi của bạn..." aria-label="Nhập câu hỏi"></textarea><button type="submit" aria-label="Gửi câu hỏi">↑</button></form>
+    <div class="chat-disclaimer">AI có thể mắc lỗi. Giá trên website là dữ liệu minh họa.</div>
+  </aside>
+
+  <div class="modal-backdrop" id="product-modal" aria-hidden="true"><div class="product-modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-title"><button class="modal-close" id="modal-close" type="button" aria-label="Đóng">×</button><div id="modal-content"></div></div></div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
