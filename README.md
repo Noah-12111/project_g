@@ -71,6 +71,10 @@ Không commit, chia sẻ hoặc đưa file `.env` lên GitHub. Nếu API key b�
 
 Kiểm tra trạng thái cấu hình tại http://127.0.0.1:3000/api/health. Khi API key đã được nạp, phản hồi sẽ có `"configured": true`.
 
+### Xử lý lỗi Gemini HTTP 503
+
+Gemini có thể tạm thời quá tải dù API key và model đúng. Backend tự thử lại tối đa 2 lần với thời gian chờ tăng dần và tôn trọng header `Retry-After` nếu Google cung cấp. Nếu vẫn nhận HTTP 503, hãy chờ một lúc rồi gửi lại. Đây thường là lỗi tải dịch vụ, không phải lỗi khóa API. Lỗi HTTP 429 là giới hạn tốc độ hoặc hạn mức sử dụng và cần kiểm tra Usage & Billing riêng.
+
 ## Kiểm thử
 
 Trong thư mục dự án:
