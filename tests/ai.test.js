@@ -6,6 +6,8 @@ const {
   getProviderConfig,
   isRealConfig,
   extractGeminiText,
+  fetchWithRetry,
+  getRetryDelayMs,
 } = require('../server');
 
 function withEnv(values, callback) {
@@ -22,6 +24,13 @@ function withEnv(values, callback) {
       else process.env[key] = previous[key];
     }
   }
+}
+
+function fakeResponse(status, retryAfter = null) {
+  return {
+    status,
+    headers: { get: (name) => name.toLowerCase() === 'retry-after' ? retryAfter : null },
+  };
 }
 
 test('prompt HobbyVerse định hướng trợ lý tư vấn mô hình bằng tiếng Việt', () => {
@@ -85,4 +94,40 @@ test('extractGeminiText đọc schema steps mới của Interactions API', () =>
 
 test('extractGeminiText hỗ trợ output_text khi có từ SDK', () => {
   assert.equal(extractGeminiText({ output_text: 'Tư vấn mô hình phù hợp.' }), 'Tư vấn mô hình phù hợp.');
+});
+
+test('fetchWithRetry thử lại khi Gemini trả HTTP 503 rồi thành công', async () => {
+  let attempts = 0;
+  const delays = [];
+  const response = await fetchWithRetry('https://example.test', {}, {
+    maxRetries: 2,
+    baseDelayMs: 10,
+    fetchImpl: async () => {
+      attempts += 1;
+      return fakeResponse(attempts < 3 ? 503 : 200);
+    },
+    sleepImpl: async (ms) => delays.push(ms),
+  });
+  assert.equal(response.status, 200);
+  assert.equal(attempts, 3);
+  assert.deepEqual(delays, [10, 20]);
+});
+
+test('fetchWithRetry tôn trọng Retry-After và giới hạn thời gian chờ tối đa', async () => {
+  const delay = getRetryDelayMs(fakeResponse(503, '20'), 0, 1000, 5000);
+  assert.equal(delay, 5000);
+});
+
+test('fetchWithRetry không thử lại lỗi không phải HTTP 503', async () => {
+  let attempts = 0;
+  const response = await fetchWithRetry('https://example.test', {}, {
+    maxRetries: 3,
+    fetchImpl: async () => {
+      attempts += 1;
+      return fakeResponse(429);
+    },
+    sleepImpl: async () => assert.fail('Không cần chờ với HTTP 429 trong helper này.'),
+  });
+  assert.equal(response.status, 429);
+  assert.equal(attempts, 1);
 });
