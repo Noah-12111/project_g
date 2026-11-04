@@ -1,0 +1,16 @@
+{
+  "name": "hobbyverse-ai-store",
+  "version": "1.1.0",
+  "private": true,
+  "description": "Website trưng bày mô hình Gundam, anime, game tích hợp Google Gemini AI.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {}
+}
